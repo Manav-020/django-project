@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+{% extends "index.html" %}
+{% load static %}
+
+{% block main_content %}
+<div class="container-flex text-center justify-content-center align-items-center" style="padding-top:10px; padding-bottom:20px; margin-top:10px;vertical-align:middle;">
+    <div class="row justify-content-center align-middle" style="margin-top: 10px;height:60px;">
+        <div class="col-md-12 text-light" style="background:#4B088A;">
+            <h4 style="margin-top:15px">Edit Reader: {{ reader.reader_name }}</h4>
+        </div> 
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="container" style="overflow-y:auto; height:600px;background:#CEECF5">
+                <form action="/readers/edit/{{ reader.id }}" method="POST">
+                    {% csrf_token %}
+                    <table class="table">
+                        <tr>
+                            <td style="text-align:left;vertical-align:middle; padding-left: 15px">Name:
+                            </td>
+                            <td><input type="text" class="form-control" name="reader_name" value="{{ reader.reader_name }}"></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:left;vertical-align:middle; padding-left: 15px">Contact:
+                            </td>
+                            <td><input type="text" class="form-control" name="reader_contact" value="{{ reader.reader_contact }}"></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:left;vertical-align:middle; padding-left: 15px">Reference ID:
+                            </td>
+                            <td><input type="text" class="form-control" name="reader_ref_id" value="{{ reader.reference_id }}"></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:left;vertical-align:middle; padding-left: 15px">Address:
+                            </td>
+                            <td><textarea class="form-control" name="address">{{ reader.reader_address }}</textarea></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <button class="btn btn-primary" type="submit">Save Changes</button>
+                                <a href="/readers" class="btn btn-secondary">Cancel</a>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

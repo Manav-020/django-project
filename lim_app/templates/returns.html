@@ -1,0 +1,99 @@
+{% extends "index.html" %}
+{% load static %}
+
+{% block main_content %}
+<div class="container-flex text-center justify-content-center align-items-center" style="padding-top:10px; padding-bottom:20px; margin-top:10px;vertical-align:middle;">
+    {% if error_message %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ error_message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+    
+    <div class="row justify-content-center align-middle" style="margin-top: 10px;height:60px;">
+        <div class="col-md-12 text-light" style="background:#4B088A;">
+            <h4 style="margin-top:15px">My Return History</h4>
+        </div>
+    </div>
+    
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <div class="container" style="overflow-y:auto; height:600px;">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Book Title</th>
+                            <th>Author</th>
+                            <th>Issue Date</th>
+                            <th>Due Date</th>
+                            <th>Return Date</th>
+                            <th>Status</th>
+                            <th>Penalty Points</th>
+                            <th>Fine Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for issue in returned_books %}
+                        <tr>
+                            <td>
+                                {{ issue.book.title }}
+                                {% if issue.is_lost %}<span class="badge bg-dark">LOST</span>{% endif %}
+                                {% if issue.is_damaged %}<span class="badge bg-warning text-dark">DAMAGED</span>{% endif %}
+                            </td>
+                            <td>{{ issue.book.author }}</td>
+                            <td>{{ issue.issue_date|date:"d M Y, h:i a" }}</td>
+                            <td>{{ issue.due_date|date:"d M Y" }}</td>
+                            <td>{{ issue.return_date|date:"d M Y, h:i a" }}</td>
+                            <td>
+                                {% if issue.is_lost %}
+                                    <span class="badge bg-dark">Lost</span>
+                                {% elif issue.is_damaged %}
+                                    <span class="badge bg-warning text-dark">Damaged</span>
+                                    <a href="#" data-bs-toggle="tooltip" title="{{ issue.damage_description }}">
+                                        <i class="fas fa-info-circle"></i>
+                                    </a>
+                                {% elif not issue.returned_late %}
+                                    <span class="badge bg-success">On Time</span>
+                                {% else %}
+                                    <span class="badge bg-danger">{{ issue.days_late }} days late</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if issue.penalty_points > 0 %}
+                                    <span class="badge bg-secondary">{{ issue.penalty_points }}</span>
+                                {% else %}
+                                    <span>0</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if issue.is_lost %}
+                                    <span class="badge bg-danger">${{ issue.lost_fee|floatformat:2 }}</span>
+                                {% elif issue.is_damaged %}
+                                    <span class="badge bg-warning text-dark">${{ issue.damage_fee|floatformat:2 }}</span>
+                                    {% if issue.late_fee > 0 %}
+                                        + <span class="badge bg-danger">${{ issue.late_fee|floatformat:2 }}</span>
+                                    {% endif %}
+                                {% elif issue.late_fee > 0 %}
+                                    <span class="badge bg-danger">${{ issue.late_fee|floatformat:2 }}</span>
+                                {% else %}
+                                    <span class="badge bg-success">$0.00</span>
+                                {% endif %}
+                                
+                                {% if issue.total_fee > 0 %}
+                                    <br><small>Total: ${{ issue.total_fee|floatformat:2 }}</small>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" class="text-center">No return history found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

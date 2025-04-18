@@ -1,0 +1,49 @@
+{% extends "index.html" %}
+{% load static %}
+
+{% block main_content %}
+<div class="container-flex text-center justify-content-center align-items-center mx-auto" style="padding-top:10px; padding-bottom:20px; margin-top:10px; max-width: 1400px;">
+    <div class="jumbotron">
+        <div class="container text-center">
+            <div class="row justify-content-center mb-4">
+                <div class="col-md-12">
+                    <img src="{% static 'images/logo.png' %}" class="img-fluid" alt="svnit logo" style="max-height:70px; max-width:70px; margin-bottom:20px;">
+                    <h1 class="display-4">Welcome to SVNIT Library</h1>
+                    <p class="lead">Manage your books, readers, and book issues efficiently.</p>
+                    <div class="d-flex justify-content-center gap-3">
+                        <a class="btn btn-primary btn-lg" href="/readers" role="button">Manage Readers</a>
+                        <a class="btn btn-success btn-lg" href="/books" role="button">Browse our collection</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-5">
+        <div class="row align-items-start text-center">
+            <div class="col-md-4">
+                <h2>Why Reading is Important?</h2>
+                <p>Reading is a lifelong skill that improves memory, builds a robust vocabulary and foundation of knowledge, and adds a richness and depth of meaning to life for all those who can access true, deep comprehension</p>
+            </div>
+            <div class="col-md-4">
+                <h2>Key Benefits</h2>
+                <ul class="list-unstyled">
+                    <li>Increases your vocabulary</li>
+                    <li>Reduces stress</li>
+                    <li>Improves mental health</li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h2>Thought for the Day</h2>
+                <p class="font-italic">"Learn as if you will live forever, live like you will die tomorrow."</p>
+            </div>
+        </div>
+    </div>
+
+    <hr class="my-5">
+
+    <footer class="container text-center">
+        <p>© Copyright 2022 All rights reserved by SVNIT</p>
+    </footer>
+</div>
+{% endblock %}

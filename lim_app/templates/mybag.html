@@ -1,0 +1,63 @@
+{% extends "index.html" %}
+{% load static %}
+
+{% block main_content %}
+<div class="container-flex text-center justify-content-center align-items-center" style="padding-top:10px; padding-bottom:20px; margin-top:10px;vertical-align:middle;">
+    {% if error_message %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ error_message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+    
+    <div class="row justify-content-center align-middle" style="margin-top: 10px;height:60px;">
+        <div class="col-md-12 text-light" style="background:#4B088A;">
+            <h4 style="margin-top:15px">My Borrowed Books</h4>
+        </div>
+    </div>
+    
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <div class="container" style="overflow-y:auto; height:600px;">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Book Title</th>
+                            <th>Author</th>
+                            <th>Issue Date</th>
+                            <th>Due Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for issue in borrowed_books %}
+                        <tr>
+                            <td>{{ issue.book.title }}</td>
+                            <td>{{ issue.book.author }}</td>
+                            <td>{{ issue.issue_date|date:"d M Y, h:i a" }}</td>
+                            <td>{{ issue.due_date|date:"d M Y" }}</td>
+                            <td>
+                                <button onclick="returnBook({{issue.id}})" class="btn btn-primary btn-sm">Return</button>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center">You have no borrowed books</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function returnBook(issueId) {
+    if (confirm('Confirm return of this book?')) {
+        window.location.href = '/books/return/' + issueId;
+    }
+}
+</script>
+{% endblock %}
+

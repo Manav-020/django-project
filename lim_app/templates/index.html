@@ -1,0 +1,61 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Library Information Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <style>
+        .jumbotron {
+            padding: 2rem 1rem;
+            margin-bottom: 2rem;
+            background-color: rgb(227, 239, 252);
+            border-radius: 0.3rem;
+        }
+    </style>
+  </head>
+  <body>
+
+    <nav class="navbar bg-body-tertiary">
+        <div class="container-fluid justify-content-center align-items-center" style="background-color: #0000FF">
+          <span class="navbar-brand mb-0 h1 text-light" style="font-size:25px">
+            <img src="{% static 'images/logo.png' %}" alt="" style="max-height:50px; max-width:50px; margin-right:8px;">
+            SVNIT Library
+          </span>
+        </div>
+    </nav>
+    
+    <div class="container-fluid">
+      <div class="row justify-content-center">
+        <div class="col-auto">
+          <ul class="nav nav-tabs d-flex justify-content-center w-100">
+        <li class="nav-item">
+          <a class="nav-link {% if current_tab == 'home' %}active{% endif %}" href="/home">HOME</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if current_tab == 'readers' %}active{% endif %}" href="/readers">READERS</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if current_tab == 'books' %}active{% endif %}" href="/books">BOOKS</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if current_tab == 'issued_books' %}active{% endif %}" href="/books/issued">ISSUED BOOKS</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if current_tab == 'returns' %}active{% endif %}" href="/returns">RETURNS</a>
+        </li>
+      </ul>
+        </div>
+      </div>
+    </div>
+    {% block main_content %}
+    {% endblock %}
+
+    <!-- Scripts moved to end of body -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.min.js" integrity="sha384-VQqxDN0EQCkWoxt/0vsQvZswzTHUVOImccYmSyhJTp7kGtPed0Qcx8rK9h9YEgx+" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  </body>
+</html>

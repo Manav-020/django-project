@@ -1,0 +1,99 @@
+{% extends "index.html" %}
+{% load static %}
+
+{% block main_content %}
+<div class="container-flex text-center justify-content-center align-items-center" style="padding-top:10px; padding-bottom:20px; margin-top:10px;vertical-align:middle;">
+    {% if error_message %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ error_message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+    
+    <div class="row justify-content-center align-middle" style="margin-top: 10px;height:60px;">
+        <div class="col-md-12 text-light" style="background:#4B088A;">
+            <h4 style="margin-top:15px">Return Book: {{ book.title }}</h4>
+        </div>
+    </div>
+    
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Book Return Details</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <p><strong>Book Title:</strong> {{ book.title }}</p>
+                            <p><strong>Author:</strong> {{ book.author }}</p>
+                            <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Issue Date:</strong> {{ issue.issue_date|date:"d M Y, h:i a" }}</p>
+                            <p><strong>Due Date:</strong> {{ issue.due_date|date:"d M Y" }}</p>
+                            <p><strong>Issued To:</strong> {{ issue.reader.reader_name }}</p>
+                        </div>
+                    </div>
+                    
+                    {% if issue.is_overdue %}
+                    <div class="alert alert-warning">
+                        <strong>Overdue Notice:</strong> This book is {{ issue.calculate_overdue_days }} days overdue.
+                        <p>
+                            Current fine: ${{ issue.calculate_fine|floatformat:2 }} 
+                            ({{ issue.calculate_overdue_days }} days × ${{ issue.fine_rate }} per day)
+                        </p>
+                        <p>Penalty points: {{ issue.calculate_penalty_points }}</p>
+                    </div>
+                    {% endif %}
+                    
+                    <form method="POST" action="/books/return/{{ issue.id }}">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Is the book damaged?</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="is_damaged" id="not_damaged" value="no" checked onchange="toggleDamageDescription(false)">
+                                <label class="form-check-label" for="not_damaged">
+                                    No, the book is in good condition
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="is_damaged" id="is_damaged" value="yes" onchange="toggleDamageDescription(true)">
+                                <label class="form-check-label" for="is_damaged">
+                                    Yes, the book is damaged
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3" id="damage_description_container" style="display: none;">
+                            <label for="damage_description" class="form-label">Damage Description</label>
+                            <textarea class="form-control" id="damage_description" name="damage_description" rows="3" placeholder="Please describe the damage..."></textarea>
+                            <div class="form-text text-danger">
+                                Note: Reporting damage will incur a penalty fee of ${{ damage_fee|floatformat:2 }} (20% of book price) and 3 penalty points.
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="/books/issued" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Return Book</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleDamageDescription(show) {
+    const container = document.getElementById('damage_description_container');
+    container.style.display = show ? 'block' : 'none';
+    
+    if (!show) {
+        document.getElementById('damage_description').value = '';
+    }
+}
+</script>
+{% endblock %}
+

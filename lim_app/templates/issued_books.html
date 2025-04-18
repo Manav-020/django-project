@@ -1,0 +1,103 @@
+{% extends "index.html" %}
+{% load static %}
+{% load custom_filters %}
+
+{% block main_content %}
+<div class="container-flex text-center justify-content-center align-items-center" style="padding-top:10px; padding-bottom:20px; margin-top:10px;vertical-align:middle;">
+    {% if error_message %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ error_message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+    
+    <div class="row justify-content-center align-middle" style="margin-top: 10px;height:60px;">
+        <div class="col-md-12 text-light" style="background:#4B088A;">
+            <h4 style="margin-top:15px">Currently Issued Books</h4>
+        </div>
+    </div>
+    
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <div class="container" style="overflow-y:auto; height:600px;">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Book Title</th>
+                            <th>Issued To</th>
+                            <th>Issue Date</th>
+                            <th>Due Date</th>
+                            <th>Overdue Days</th>
+                            <th>Fine/Penalty</th>
+                            <th>Points</th>
+                            <th>Contact</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for issue in issued_books %}
+                        <tr {% if issue.is_overdue %} class="table-danger" {% elif issue.is_lost %} class="table-dark" {% elif issue.is_damaged %} class="table-warning" {% endif %}>
+                            <td>
+                                {{ issue.book.title }}
+                                {% if issue.is_lost %}<span class="badge bg-dark">LOST</span>{% endif %}
+                                {% if issue.is_damaged %}<span class="badge bg-warning text-dark">DAMAGED</span>{% endif %}
+                            </td>
+                            <td>{{ issue.reader.reader_name }}</td>
+                            <td>{{ issue.issue_date|date:"d M Y, h:i a" }}</td>
+                            <td>{{ issue.due_date|date:"d M Y" }}</td>
+                            <td>
+                                {% if issue.calculate_overdue_days > 0 %}
+                                    <span class="text-danger fw-bold">{{ issue.calculate_overdue_days }} days</span>
+                                {% else %}
+                                    0 days
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if issue.is_lost %}
+                                    <span class="badge bg-danger">${{ issue.calculate_lost_book_penalty|floatformat:2 }}</span>
+                                {% elif issue.is_damaged %}
+                                    <span class="badge bg-warning text-dark">${{ issue.damage_fee|floatformat:2 }}</span>
+                                {% elif issue.current_fine > 0 %}
+                                    <span class="badge bg-warning text-dark">${{ issue.current_fine|floatformat:2 }}</span>
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if issue.potential_penalty_points > 0 %}
+                                    <span class="badge bg-secondary">{{ issue.potential_penalty_points }}</span>
+                                {% else %}
+                                    0
+                                {% endif %}
+                            </td>
+                            <td>{{ issue.reader.reader_contact }}</td>
+                            <td>
+                                <a href="/books/return/{{issue.id}}" class="btn btn-primary btn-sm">Return</a>
+                                {% if not issue.is_lost %}
+                                    <button onclick="markAsLost({{issue.id}})" class="btn btn-danger btn-sm">Mark Lost</button>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="9" class="text-center">No books are currently issued</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Function replaced with direct link for better damage reporting
+
+function markAsLost(issueId) {
+    if (confirm('Are you sure you want to mark this book as lost? This will incur a penalty fee.')) {
+        window.location.href = '/books/lost/' + issueId;
+    }
+}
+</script>
+{% endblock %}
+

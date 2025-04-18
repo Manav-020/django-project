@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+{% extends "index.html" %}
+{% load static %}
+
+{% block main_content %}
+<div class="container-flex text-center justify-content-center align-items-center" style="padding-top:10px; padding-bottom:20px; margin-top:10px;vertical-align:middle;">
+    <div class="row justify-content-center align-middle" style="margin-top: 10px;height:60px;">
+        <div class="col-md-12 text-light" style="background:#4B088A;">
+            <h4 style="margin-top:15px">Edit Book: {{ book.title }}</h4>
+        </div> 
+    </div>
+    
+    {% if error_message %}
+    <div class="row justify-content-center mt-2">
+        <div class="col-md-6">
+            <div class="alert alert-danger">
+                {{ error_message }}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="container" style="overflow-y:auto; height:600px;background:#CEECF5">
+                <form action="/books/edit/{{ book.id }}" method="POST">
+                    {% csrf_token %}
+                    <table class="table">
+                        <tr>
+                            <td style="text-align:left;vertical-align:middle; padding-left: 15px">Title:
+                            </td>
+                            <td><input type="text" class="form-control" name="title" value="{{ book.title }}" required></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:left;vertical-align:middle; padding-left: 15px">Author:
+                            </td>
+                            <td><input type="text" class="form-control" name="author" value="{{ book.author }}" required></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:left;vertical-align:middle; padding-left: 15px">ISBN:
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" name="isbn" value="{{ book.isbn }}" required>
+                                <small class="form-text text-muted">ISBN must be unique for each book</small>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:left;vertical-align:middle; padding-left: 15px">Publication Year:
+                            </td>
+                            <td>
+                                <input type="number" class="form-control" name="publication_year" value="{{ book.publication_year }}" required>
+                                <small class="form-text text-muted">Enter a valid 4-digit year (e.g., 2021)</small>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:left;vertical-align:middle; padding-left: 15px">Category:
+                            </td>
+                            <td><input type="text" class="form-control" name="category" value="{{ book.category }}"></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:left;vertical-align:middle; padding-left: 15px">Available Copies:
+                            </td>
+                            <td>
+                                <input type="number" class="form-control" name="available_copies" value="{{ book.available_copies }}" min="0" required>
+                                <small class="form-text text-muted">Must not exceed total copies</small>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:left;vertical-align:middle; padding-left: 15px">Total Copies:
+                            </td>
+                            <td>
+                                <input type="number" class="form-control" name="total_copies" value="{{ book.total_copies }}" min="1" required>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:left;vertical-align:middle; padding-left: 15px">Description:
+                            </td>
+                            <td><textarea class="form-control" name="description" rows="3">{{ book.description }}</textarea></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <button class="btn btn-primary" type="submit">Save Changes</button>
+                                <a href="/books" class="btn btn-secondary">Cancel</a>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
