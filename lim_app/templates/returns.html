@@ -24,12 +24,12 @@
                         <tr>
                             <th>Book Title</th>
                             <th>Author</th>
+                            <th>Reader</th>
                             <th>Issue Date</th>
                             <th>Due Date</th>
                             <th>Return Date</th>
                             <th>Status</th>
                             <th>Penalty Points</th>
-                            <th>Fine Amount</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -41,6 +41,7 @@
                                 {% if issue.is_damaged %}<span class="badge bg-warning text-dark">DAMAGED</span>{% endif %}
                             </td>
                             <td>{{ issue.book.author }}</td>
+                            <td>{{ issue.reader.reader_name }}</td>
                             <td>{{ issue.issue_date|date:"d M Y, h:i a" }}</td>
                             <td>{{ issue.due_date|date:"d M Y" }}</td>
                             <td>{{ issue.return_date|date:"d M Y, h:i a" }}</td>
@@ -65,28 +66,10 @@
                                     <span>0</span>
                                 {% endif %}
                             </td>
-                            <td>
-                                {% if issue.is_lost %}
-                                    <span class="badge bg-danger">${{ issue.lost_fee|floatformat:2 }}</span>
-                                {% elif issue.is_damaged %}
-                                    <span class="badge bg-warning text-dark">${{ issue.damage_fee|floatformat:2 }}</span>
-                                    {% if issue.late_fee > 0 %}
-                                        + <span class="badge bg-danger">${{ issue.late_fee|floatformat:2 }}</span>
-                                    {% endif %}
-                                {% elif issue.late_fee > 0 %}
-                                    <span class="badge bg-danger">${{ issue.late_fee|floatformat:2 }}</span>
-                                {% else %}
-                                    <span class="badge bg-success">$0.00</span>
-                                {% endif %}
-                                
-                                {% if issue.total_fee > 0 %}
-                                    <br><small>Total: ${{ issue.total_fee|floatformat:2 }}</small>
-                                {% endif %}
-                            </td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="8" class="text-center">No return history found</td>
+                            <td colspan="7" class="text-center">No return history found</td>
                         </tr>
                         {% endfor %}
                     </tbody>

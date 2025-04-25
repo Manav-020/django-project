@@ -462,29 +462,21 @@ def returns(request):
             is_returned=True
         ).order_by('-return_date')
         
-        # Ensure penalty points are up to date
+        # Update penalty points for all returned books
         for book_issue in returned_books:
-            if book_issue.penalty_points == 0 and (book_issue.is_damaged or book_issue.is_lost or book_issue.calculate_overdue_days() > 0):
-                book_issue.update_penalty_points()
+            # Calculate penalty points based on late return, damage, or loss
+            penalties_before = book_issue.penalty_points
+            book_issue.update_penalty_points()
+            
+            # Only save if there's a change to avoid unnecessary DB writes
+            if penalties_before != book_issue.penalty_points:
                 book_issue.save()
         
-        # Calculate details for each returned book
+        # Calculate simple details for each returned book
         for book in returned_books:
-            if book.return_date and book.due_date:
-                book.returned_late = book.return_date > book.due_date
-                if book.returned_late:
-                    book.days_late = (book.return_date - book.due_date).days
-                else:
-                    book.days_late = 0
-            else:
-                book.returned_late = False
-                book.days_late = 0
-            
-            # Calculate different components of fines
-            book.late_fee = Decimal(str(book.days_late)) * Decimal(str(book.fine_rate)) if not book.is_lost else Decimal('0.00')
-            book.damage_fee = Decimal(str(book.book.price)) * Decimal('0.2') if book.is_damaged else Decimal('0.00')
-            book.lost_fee = book.calculate_lost_book_penalty() if book.is_lost else Decimal('0.00')
-            book.total_fee = book.late_fee + book.damage_fee + book.lost_fee
+            # Calculate overdue days using the model's method
+            book.days_late = book.calculate_overdue_days()
+            book.returned_late = book.days_late > 0
         
         return render(request, "returns.html", context={
             "current_tab": "returns",
